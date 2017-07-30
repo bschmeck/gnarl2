@@ -28,6 +28,8 @@ defmodule Gnarl.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [
+      {:httpoison, "~> 0.12.0"}
+    ]
   end
 end
