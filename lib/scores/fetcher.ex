@@ -6,6 +6,7 @@ defmodule Scores.Fetcher do
     |> url_for
     |> fetch
     |> parse
+    |> Enum.each(&convert/1)
   end
 
   def url_for(%Week{season: season, week: week}) do
@@ -16,7 +17,18 @@ defmodule Scores.Fetcher do
     HTTPoison.get! url
   end
 
-  def parse(response) do
-    response
+  def parse(%HTTPoison.Response{body: body}) do
+    body |> Floki.find("div.scorebox-wrapper")
+  end
+
+  def convert(dom) do
+    home_team = dom |> team_name("home")
+    away_team = dom |> team_name("away")
+
+    "#{away_team} @ #{home_team}"
+  end
+
+  def team_name(dom, type) when type == "home" or type == "away" do
+    dom |> Floki.find("div.#{type}-team > div.team-data > div.team-info > p.team-name") |> Floki.text
   end
 end
