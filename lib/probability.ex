@@ -3,12 +3,13 @@ defmodule Probability do
 
   defp do_outcomes([], results), do: results
   defp do_outcomes([game | rest], results) do
-    other_outcomes = do_outcomes(rest, results)
-
-    away_outcomes = other_outcomes |> Enum.map(fn(o) -> add_winner(o, game.away_team, game.away_prob) end)
-    home_outcomes = other_outcomes |> Enum.map(fn(o) -> add_winner(o, game.home_team, game.home_prob) end)
-
-    away_outcomes ++ home_outcomes
+    do_outcomes(rest, results)
+    |> Enum.flat_map(fn(o) ->
+      [
+        add_winner(o, game.away_team, game.away_prob),
+        add_winner(o, game.home_team, game.home_prob)
+      ]
+    end)
   end
 
   defp add_winner(%Outcome{winners: winners, probability: probability}, winner, winner_probability) do
