@@ -3,21 +3,21 @@ defmodule ProbabilityTest do
   doctest Gnarl
 
   test "it works for a single game" do
-    games = [%Game{home_team: "GB", home_prob: 0.5, away_team: "CHI", away_prob: 0.5}]
+    games = [%Game{home_team: "A0", home_prob: 0.5, away_team: "B0", away_prob: 0.5}]
     outcomes = Probability.outcomes(games)
-    assert Enum.member?(outcomes, %Outcome{winners: ["GB"], probability: 0.5})
-    assert Enum.member?(outcomes, %Outcome{winners: ["CHI"], probability: 0.5})
+    assert Enum.member?(outcomes, %Outcome{winners: ["A0"], probability: 0.5})
+    assert Enum.member?(outcomes, %Outcome{winners: ["B0"], probability: 0.5})
   end
 
   test "it computes probabilities" do
     games = [
-      %Game{home_team: "GB", home_prob: 0.75, away_team: "CHI", away_prob: 0.25},
-      %Game{home_team: "GB", home_prob: 0.75, away_team: "CHI", away_prob: 0.25},
-      %Game{home_team: "GB", home_prob: 0.75, away_team: "CHI", away_prob: 0.25},
-      %Game{home_team: "GB", home_prob: 0.75, away_team: "CHI", away_prob: 0.25},
+      %Game{home_team: "A0", home_prob: 0.75, away_team: "B0", away_prob: 0.25},
+      %Game{home_team: "A1", home_prob: 0.75, away_team: "B1", away_prob: 0.25},
+      %Game{home_team: "A2", home_prob: 0.75, away_team: "B2", away_prob: 0.25},
+      %Game{home_team: "A3", home_prob: 0.75, away_team: "B3", away_prob: 0.25}
     ]
     outcomes = Probability.outcomes(games)
-    assert Enum.member?(outcomes, %Outcome{winners: ~w(CHI CHI CHI CHI), probability: :math.pow(0.25, 4)})
+    assert Enum.member?(outcomes, %Outcome{winners: ~w(B0 B1 B2 B3), probability: :math.pow(0.25, 4)})
   end
 
   test "it computes all possible outcomes" do
