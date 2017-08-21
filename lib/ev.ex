@@ -26,7 +26,7 @@ defmodule EV do
   end
 
   defp ev_of(distribution) do
-    distribution |>
-      Enum.reduce(0, fn({wins, prob}, acc) -> acc + wins * prob end)
+    distribution
+    |> Enum.reduce(0, fn({wins, prob}, acc) -> acc + wins * prob end)
   end
 end
