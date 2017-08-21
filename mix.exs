@@ -30,7 +30,8 @@ defmodule Gnarl.Mixfile do
   defp deps do
     [
       {:httpoison, "~> 0.12.0"},
-      {:floki, "~> 0.17.0"}
+      {:floki, "~> 0.17.0"},
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
     ]
   end
 end
