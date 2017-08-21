@@ -20,12 +20,9 @@ defmodule EV do
   end
 
   defp score_of(games, %Outcome{winners: winners}) do
-    # Number of correct picks (R) is the intersection of picks with winners
-    # Number of incorrect picks (I) is the size of games (S) minus the number of correct picks
-    # Net score is the number correct minus the number incorrect
-    # R - I = R - (S - R) = 2R - S
-    correct = MapSet.intersection(MapSet.new(games), MapSet.new(winners)) |> Enum.count
-    2 * correct - Enum.count(games)
+    games
+    |> Enum.map(fn(g) -> if Enum.member?(winners, g), do: 1, else: -1 end)
+    |> Enum.reduce(fn(val, score) -> val + score end)
   end
 
   defp ev_of(distribution) do
