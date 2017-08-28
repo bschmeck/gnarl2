@@ -1,16 +1,13 @@
 defmodule Scores.Fetcher do
-  alias Scores.Week, as: Week
-
-  def get(week) do
-    week
-    |> url_for
+  def get do
+    feed_url()
     |> fetch
     |> parse
-    |> Enum.each(&convert/1)
+    |> Enum.map(&convert/1)
   end
 
-  def url_for(%Week{season: season, week: week}) do
-    "http://www.nfl.com/scores/#{season}/REG#{week}"
+  def feed_url do
+    "https://feeds.nfl.com/feeds-rs/scores.json"
   end
 
   def fetch(url) do
@@ -18,17 +15,15 @@ defmodule Scores.Fetcher do
   end
 
   def parse(%HTTPoison.Response{body: body}) do
-    body |> Floki.find("div.scorebox-wrapper")
+    {:ok, parsed } = body |> Poison.decode
+
+    parsed |> Map.get("gameScores")
   end
 
-  def convert(dom) do
-    home_team = dom |> team_name("home")
-    away_team = dom |> team_name("away")
+  def convert(%{"gameSchedule" => team_data, "score" => _score}) do
+    home_team = team_data |> Map.get("homeTeam") |> Map.get("abbr")
+    away_team = team_data |> Map.get("visitorTeam") |> Map.get("abbr")
 
     "#{away_team} @ #{home_team}"
-  end
-
-  def team_name(dom, type) when type == "home" or type == "away" do
-    dom |> Floki.find("div.#{type}-team > div.team-data > div.team-info > p.team-name") |> Floki.text
   end
 end
