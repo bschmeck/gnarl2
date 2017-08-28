@@ -20,10 +20,16 @@ defmodule Scores.Fetcher do
     parsed |> Map.get("gameScores")
   end
 
-  def convert(%{"gameSchedule" => team_data, "score" => _score}) do
-    home_team = team_data |> Map.get("homeTeam") |> Map.get("abbr")
-    away_team = team_data |> Map.get("visitorTeam") |> Map.get("abbr")
+  def convert(%{"gameSchedule" => team_data, "score" => score_data}) do
+    {:ok, start_time} = team_data |> Map.get("isoTime") |> div(1000) |> DateTime.from_unix
 
-    "#{away_team} @ #{home_team}"
+    %Game{
+      away_team: team_data |> Map.get("visitorTeam") |> Map.get("abbr"),
+      home_team: team_data |> Map.get("homeTeam") |> Map.get("abbr"),
+      away_score: score_data |> Map.get("visitorTeamScore") |> Map.get("pointTotal"),
+      home_score: score_data |> Map.get("homeTeamScore") |> Map.get("pointTotal"),
+      start_time: start_time,
+      time_left: score_data |> Map.get("phase")
+    }
   end
 end
