@@ -31,7 +31,8 @@ defmodule Gnarl.Mixfile do
     [
       {:httpoison, "~> 0.12.0"},
       {:floki, "~> 0.17.0"},
-      {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:poison, "~> 3.1"},
     ]
   end
 end
