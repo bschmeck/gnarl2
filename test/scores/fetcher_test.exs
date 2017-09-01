@@ -39,4 +39,34 @@ defmodule Scores.FetcherTest do
     assert {:ok, game.start_time} == DateTime.from_unix(1503878400)
     assert game.time_left == "FINAL"
   end
+
+  test "it handles missing score Map" do
+    game_score = %{"gameSchedule" => %{"gameDate" => "08/27/2017", "gameId" => 2017082753,
+                                      "gameKey" => 57217, "gameTimeEastern" => "20:00:00",
+                                      "gameTimeLocal" => "19:00:00", "gameType" => "PRE",
+                                      "homeDisplayName" => "Minnesota Vikings", "homeNickname" => "Vikings",
+                                      "homeTeam" => %{"abbr" => "MIN", "cityState" => "Minnesota",
+                                                     "conferenceAbbr" => "NFC", "divisionAbbr" => "NCN",
+                                                     "fullName" => "Minnesota Vikings", "nick" => "Vikings", "season" => 2017,
+                                                     "teamId" => "3000", "teamType" => "TEAM"}, "homeTeamAbbr" => "MIN",
+                                      "homeTeamId" => "3000", "isoTime" => 1503878400000, "season" => 2017,
+                                      "seasonType" => "PRE",
+                                      "site" => %{"roofType" => "INDOOR", "siteCity" => "Minneapolis",
+                                                 "siteFullname" => "U.S. Bank Stadium", "siteId" => 1652,
+                                                 "siteState" => "MN"}, "visitorDisplayName" => "San Francisco 49ers",
+                                      "visitorNickname" => "49ers",
+                                      "visitorTeam" => %{"abbr" => "SF", "cityState" => "San Francisco",
+                                                        "conferenceAbbr" => "NFC", "divisionAbbr" => "NCW",
+                                                        "fullName" => "San Francisco 49ers", "nick" => "49ers", "season" => 2017,
+                                                        "teamId" => "4500", "teamType" => "TEAM"}, "visitorTeamAbbr" => "SF",
+                                      "visitorTeamId" => "4500", "week" => 3},
+                   "score" => nil}
+    game = Scores.Fetcher.convert(game_score)
+    assert game.home_team == "MIN"
+    assert game.away_team == "SF"
+    assert game.home_score == 0
+    assert game.away_score == 0
+    assert {:ok, game.start_time} == DateTime.from_unix(1503878400)
+    assert game.time_left == "PREGAME"
+  end
 end
