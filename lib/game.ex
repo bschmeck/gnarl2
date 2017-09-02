@@ -8,3 +8,9 @@ defmodule Game do
              :start_time,
              :time_left]
 end
+
+defimpl Inspect, for: Game do
+  def inspect(game, _opts) do
+    "#{game.away_team} @ #{game.home_team} #{game.away_score}-#{game.home_score} #{game.time_left}"
+  end
+end
