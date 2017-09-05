@@ -1,4 +1,31 @@
 defmodule Probability do
+  def fetch do
+    %HTTPoison.Response{body: body} = HTTPoison.get! "https://www.numberfire.com/nfl/games"
+    body
+    |> Floki.find("div.win-probability")
+    |> Enum.map(fn(node) ->
+      %{
+        team: node |> team,
+        probability: node |> probability}
+    end)
+  end
+
+  defp team(node) do
+    node
+    |> Floki.attribute("class")
+    |> Enum.flat_map(&(String.split(&1)))
+    |> Enum.find_value(&team_from_class/1)
+  end
+
+  defp team_from_class("team-nfl-" <> team_abbr), do: team_abbr
+  defp team_from_class(_), do: nil
+
+  defp probability(node) do
+    {prob, "%"} = node |> Floki.find("h4") |> Floki.text |> String.replace(~r/\s/, "") |> Float.parse
+
+    prob / 100
+  end
+
   def outcomes(games), do: do_outcomes(games, [%Outcome{}])
 
   defp do_outcomes([], results), do: results
