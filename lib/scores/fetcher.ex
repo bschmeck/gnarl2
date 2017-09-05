@@ -15,7 +15,7 @@ defmodule Scores.Fetcher do
   end
 
   def parse(%HTTPoison.Response{body: body}) do
-    {:ok, parsed } = body |> Poison.decode
+    {:ok, parsed} = body |> Poison.decode
 
     parsed |> Map.get("gameScores")
   end
@@ -48,6 +48,6 @@ defmodule Scores.Fetcher do
   def score(%{"score" => %{"visitorTeamScore" => %{"pointTotal" => total}}}, :away), do: total
   def score(%{"score" => %{"homeTeamScore" => %{"pointTotal" => total}}}, :home), do: total
 
-  def team_abbr(%{"gameSchedule" => %{"visitorTeam" => %{"abbr" => abbr }}}, :away), do: abbr
-  def team_abbr(%{"gameSchedule" => %{"homeTeam" => %{"abbr" => abbr }}}, :home), do: abbr
+  def team_abbr(%{"gameSchedule" => %{"visitorTeam" => %{"abbr" => abbr}}}, :away), do: abbr
+  def team_abbr(%{"gameSchedule" => %{"homeTeam" => %{"abbr" => abbr}}}, :home), do: abbr
 end
