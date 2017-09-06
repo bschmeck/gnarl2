@@ -1,5 +1,5 @@
 defmodule Fetcher do
-  def probabilities(client) do
+  def probabilities(client \\ HttpClient) do
     {:ok, body} = client.get "https://www.numberfire.com/nfl/games"
     nodes = body |> Floki.find("div.win-probability")
 
@@ -19,7 +19,7 @@ defmodule Fetcher do
     prob / 100
   end
 
-  def scores(client) do
+  def scores(client \\ HttpClient) do
     {:ok, body} = client.get "https://feeds.nfl.com/feeds-rs/scores.json"
 
     body |> parse |> Enum.map(&convert/1)
