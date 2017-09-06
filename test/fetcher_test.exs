@@ -34,22 +34,22 @@ defmodule FetcherTest do
 
   test "it fetches scores" do
     results = Fetcher.scores(HttpStubClient)
-    assert Enum.count(results) == 15
+    assert Enum.count(results) == 2
 
-    game = Enum.find(results, fn(game) -> game.home_team == "MIN" end)
-    assert game.home_team == "MIN"
-    assert game.away_team == "MIA"
-    assert game.home_score == 9
-    assert game.away_score == 30
-    assert {:ok, game.start_time} == DateTime.from_unix(1504224000)
-    assert game.time_left == "FINAL"
-
-    game = Enum.find(results, fn(game) -> game.home_team == "NYJ" end)
+    game = results |> Enum.at(0)
     assert game.home_team == "NYJ"
     assert game.away_team == "PHI"
     assert game.home_score == 0
     assert game.away_score == 0
     assert {:ok, game.start_time} == DateTime.from_unix(1504220400)
     assert game.time_left == "PREGAME"
+
+    game = results |> Enum.at(1)
+    assert game.home_team == "MIN"
+    assert game.away_team == "MIA"
+    assert game.home_score == 9
+    assert game.away_score == 30
+    assert {:ok, game.start_time} == DateTime.from_unix(1504224000)
+    assert game.time_left == "FINAL"
   end
 end
