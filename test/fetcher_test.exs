@@ -2,6 +2,10 @@ defmodule HttpStubClient do
   def get("https://www.numberfire.com/nfl/games") do
     File.read("numberfire.html")
   end
+
+  def get("https://feeds.nfl.com/feeds-rs/scores.json") do
+    File.read("scores.4.json")
+  end
 end
 
 defmodule FetcherTest do
@@ -26,5 +30,26 @@ defmodule FetcherTest do
     assert Enum.member? results, {"DAL", 0.7809999999999999}
     assert Enum.member? results, {"MIN", 0.503}
     assert Enum.member? results, {"DEN", 0.609}
+  end
+
+  test "it fetches scores" do
+    results = Fetcher.scores(HttpStubClient)
+    assert Enum.count(results) == 15
+
+    game = Enum.find(results, fn(game) -> game.home_team == "MIN" end)
+    assert game.home_team == "MIN"
+    assert game.away_team == "MIA"
+    assert game.home_score == 9
+    assert game.away_score == 30
+    assert {:ok, game.start_time} == DateTime.from_unix(1504224000)
+    assert game.time_left == "FINAL"
+
+    game = Enum.find(results, fn(game) -> game.home_team == "NYJ" end)
+    assert game.home_team == "NYJ"
+    assert game.away_team == "PHI"
+    assert game.home_score == 0
+    assert game.away_score == 0
+    assert {:ok, game.start_time} == DateTime.from_unix(1504220400)
+    assert game.time_left == "PREGAME"
   end
 end
