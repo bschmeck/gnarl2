@@ -1,10 +1,10 @@
 defmodule HttpStubClient do
   def get("https://www.numberfire.com/nfl/games") do
-    File.read("numberfire.html")
+    File.read("test/data/numberfire.html")
   end
 
   def get("https://feeds.nfl.com/feeds-rs/scores.json") do
-    File.read("scores.4.json")
+    File.read("test/data/scores.json")
   end
 end
 
