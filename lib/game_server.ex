@@ -86,10 +86,12 @@ defmodule GameServer do
   end
 
   defp update_probabilities(%Game{away_team: team} = game, {team, probability}) do
-    %Game{game | away_prob: probability, home_prob: 1 - probability}
+    home_prob = 1 - probability |> Float.round(3)
+    %Game{game | away_prob: probability, home_prob: home_prob}
   end
 
   defp update_probabilities(%Game{home_team: team} = game, {team, probability}) do
-    %Game{game | home_prob: probability, away_prob: 1 - probability}
+    away_prob = 1 - probability |> Float.round(3)
+    %Game{game | home_prob: probability, away_prob: away_prob}
   end
 end

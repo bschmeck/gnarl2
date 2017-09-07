@@ -23,7 +23,7 @@ defmodule GameServerTest do
 
     game = games |> Map.values |> hd
     assert game.away_prob == 0.75
-    assert game.home_prob == 1 - 0.75
+    assert game.home_prob == 0.25
   end
 
   test "it adds probabilities to existing games when given the home team's prob" do
@@ -32,7 +32,7 @@ defmodule GameServerTest do
     {:noreply, games} = GameServer.handle_cast({:update_probabilities, [{"B0", 0.82}]}, games)
 
     game = games |> Map.values |> hd
-    assert game.away_prob == 1 - 0.82
+    assert game.away_prob == 0.18
     assert game.home_prob == 0.82
   end
 

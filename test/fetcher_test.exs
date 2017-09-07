@@ -18,16 +18,16 @@ defmodule FetcherTest do
     assert Enum.member? results, {"HOU", 0.679}
     assert Enum.member? results, {"CIN", 0.679}
     assert Enum.member? results, {"WSH", 0.675}
-    assert Enum.member? results, {"PIT", 0.7240000000000001}
-    assert Enum.member? results, {"BUF", 0.8220000000000001}
+    assert Enum.member? results, {"PIT", 0.724}
+    assert Enum.member? results, {"BUF", 0.822}
     assert Enum.member? results, {"MIA", 0.521}
     assert Enum.member? results, {"TEN", 0.61}
     assert Enum.member? results, {"ARI", 0.552}
     assert Enum.member? results, {"ATL", 0.705}
     assert Enum.member? results, {"IND", 0.56}
     assert Enum.member? results, {"CAR", 0.653}
-    assert Enum.member? results, {"GB", 0.6940000000000001}
-    assert Enum.member? results, {"DAL", 0.7809999999999999}
+    assert Enum.member? results, {"GB", 0.694}
+    assert Enum.member? results, {"DAL", 0.781}
     assert Enum.member? results, {"MIN", 0.503}
     assert Enum.member? results, {"DEN", 0.609}
   end

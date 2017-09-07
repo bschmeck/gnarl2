@@ -16,7 +16,7 @@ defmodule Fetcher do
   defp probability_from_h4(node) do
     {prob, "%"} = node |> Floki.find("h4") |> Floki.text |> String.replace(~r/\s/, "") |> Float.parse
 
-    prob / 100
+    prob / 100 |> Float.round(3)
   end
 
   def scores(client \\ HttpClient) do
