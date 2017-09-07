@@ -17,15 +17,23 @@ defmodule GameServer do
 
   # Server
 
-  def handle_cast({:update_scores, scores}, _from, games) do
-    Enum.each(scores, fn(score) -> games = update_game_by_score(games, score) end)
+  def handle_cast({:update_scores, scores}, games) do
+    games = update_games_by_scores(games, scores)
+
     {:noreply, games}
   end
 
-  def handle_cast({:update_probabilities, probabilities}, _from, games) do
-    Enum.each(probabilities, fn(probabilty) -> games = update_game_by_probability(games, probability) end)
+  def handle_cast({:update_probabilities, probabilities}, games) do
+    games = update_games_by_probabilities(games, probabilities)
+
     {:noreply, games}
   end
+
+  defp update_games_by_scores(games, [score | rest]) do
+    updated = update_games_by_scores(games, rest)
+    update_game_by_score(updated, score)
+  end
+  defp update_games_by_scores(games, []), do: games
 
   defp update_game_by_score(games, score) do
     key = game_key_for(score)
@@ -41,19 +49,30 @@ defmodule GameServer do
     Map.put(games, key, updated)
   end
 
-  defp update_game_by_probability(games, {team, probability}) do
-    updated = games
-              |> game_with_team(team)
-              |> update_probabilities({team, probability})
-    key = game_key_for(updated)
-    Map.put(games, key, updated)
+  defp game_key_for(%Game{away_team: away, home_team: home}), do: "#{away}@#{home}"
+
+  defp update_games_by_probabilities(games, [{team, prob} | rest]) do
+    updated = update_games_by_probabilities(games, rest)
+    update_game_by_probability(updated, team, prob)
+  end
+  defp update_games_by_probabilities(games, []), do: games
+
+  defp update_game_by_probability(games, team, probability) do
+    game = games |> game_with_team(team)
+
+    if game == nil do
+      games
+    else
+      updated = game |> update_probabilities({team, probability})
+      key = game_key_for(updated)
+      Map.put(games, key, updated)
+    end
   end
 
-  defp game_key_for(%Game{away_team: away, home_team: home}), do: "#{away}@#{home}"
   defp game_with_team(games, team) do
     games
     |> Map.values
-    |> Enum.detect(fn
+    |> Enum.find(fn
       (%Game{home_team: ^team}) -> true
       (%Game{away_team: ^team}) -> true
       (_) -> false
