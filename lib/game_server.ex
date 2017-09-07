@@ -15,7 +15,13 @@ defmodule GameServer do
     GenServer.cast(__MODULE__, {:update_probabilities, probabilities})
   end
 
+  def games do
+    GenServer.call(__MODULE__, {:games})
+  end
+
   # Server
+
+  def handle_call({:games}, _from, games), do: {:reply, {:ok, games}, games}
 
   def handle_cast({:update_scores, scores}, games) do
     games = update_games_by_scores(games, scores)
