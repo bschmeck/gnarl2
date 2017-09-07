@@ -10,7 +10,7 @@ defmodule Fetcher do
   end
 
   defp team_from_classes(classes) when is_binary(classes), do: classes |> String.split |> team_from_classes
-  defp team_from_classes(["team-nfl-" <> team_abbr | _rest]), do: team_abbr
+  defp team_from_classes(["team-nfl-" <> team_abbr | _rest]), do: team_abbr |> Canonicalize.team_abbr
   defp team_from_classes([_head | rest]), do: team_from_classes(rest)
 
   defp probability_from_h4(node) do
