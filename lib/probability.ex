@@ -8,10 +8,10 @@ defmodule Probability do
     |> Enum.flat_map(possible_winners_fn(game))
   end
 
-  defp possible_winners_fn(%Game{away_prob: 0, home_team: team, home_prob: prob}) do
+  defp possible_winners_fn(%Game{away_prob: p, home_team: team, home_prob: prob}) when p == 0 do
     &([add_winner(&1, team, prob)])
   end
-  defp possible_winners_fn(%Game{home_prob: 0, away_team: team, away_prob: prob}) do
+  defp possible_winners_fn(%Game{home_prob: p, away_team: team, away_prob: prob}) when p == 0 do
     &([add_winner(&1, team, prob)])
   end
   defp possible_winners_fn(game) do

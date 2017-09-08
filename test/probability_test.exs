@@ -47,7 +47,7 @@ defmodule ProbabilityTest do
     games = [
       %Game{home_team: "A0", home_prob: 0.75, away_team: "B0", away_prob: 0.25},
       %Game{home_team: "A1", home_prob: 0.75, away_team: "B1", away_prob: 0.25},
-      %Game{home_team: "A2", home_prob: 1, away_team: "B2", away_prob: 0},
+      %Game{home_team: "A2", home_prob: 1.00, away_team: "B2", away_prob: 0.00},
       %Game{home_team: "A3", home_prob: 0.75, away_team: "B3", away_prob: 0.25}
     ]
     outcomes = Probability.outcomes(games)
