@@ -1,10 +1,10 @@
 defmodule HttpStubClient do
-  def get("https://www.numberfire.com/nfl/games") do
-    File.read("test/data/numberfire.html")
-  end
-
   def get("https://feeds.nfl.com/feeds-rs/scores.json") do
     File.read("test/data/scores.json")
+  end
+
+  def get("https://nf-api.numberfire.com/v0/gameScores?sport=nfl&week=1") do
+    File.read("test/data/numberfire.json")
   end
 end
 
@@ -13,21 +13,20 @@ defmodule FetcherTest do
 
   test "it fetches probabilities" do
     results = Fetcher.probabilities(HttpStubClient)
-    assert Enum.count(results) == 16
-    assert Enum.member? results, {"NE", 0.708}
+    assert Enum.count(results) == 15
+    assert Enum.member? results, {"NE", 0.424}
     assert Enum.member? results, {"HOU", 0.679}
     assert Enum.member? results, {"CIN", 0.679}
-    assert Enum.member? results, {"WAS", 0.675}
-    assert Enum.member? results, {"PIT", 0.724}
-    assert Enum.member? results, {"BUF", 0.822}
-    assert Enum.member? results, {"MIA", 0.521}
+    assert Enum.member? results, {"WAS", 0.674}
+    assert Enum.member? results, {"CLE", 0.276}
+    assert Enum.member? results, {"BUF", 0.817}
     assert Enum.member? results, {"TEN", 0.61}
-    assert Enum.member? results, {"ARI", 0.552}
-    assert Enum.member? results, {"ATL", 0.705}
-    assert Enum.member? results, {"IND", 0.56}
-    assert Enum.member? results, {"CAR", 0.653}
+    assert Enum.member? results, {"DET", 0.434}
+    assert Enum.member? results, {"CHI", 0.295}
+    assert Enum.member? results, {"LAR", 0.489}
+    assert Enum.member? results, {"SF", 0.347}
     assert Enum.member? results, {"GB", 0.694}
-    assert Enum.member? results, {"DAL", 0.781}
+    assert Enum.member? results, {"DAL", 0.779}
     assert Enum.member? results, {"MIN", 0.503}
     assert Enum.member? results, {"DEN", 0.609}
   end

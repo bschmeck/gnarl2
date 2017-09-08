@@ -1,23 +1,14 @@
 defmodule Fetcher do
   def probabilities(client \\ HttpClient) do
-    {:ok, body} = client.get "https://www.numberfire.com/nfl/games"
-    nodes = body |> Floki.find("div.win-probability")
-
-    teams = nodes |> Floki.attribute("class") |> Enum.map(&team_from_classes/1)
-    probabilities = nodes |> Floki.find("h4") |> Enum.map(&probability_from_h4/1)
-
-    Enum.zip(teams, probabilities)
+    with {:ok, body} <- client.get("https://nf-api.numberfire.com/v0/gameScores?sport=nfl&week=1"),
+         {:ok, json} <- body |> Poison.decode,
+      do: json |> Enum.map(&tuple_from_game/1) |> Enum.map(&format_tuple/1)
   end
 
-  defp team_from_classes(classes) when is_binary(classes), do: classes |> String.split |> team_from_classes
-  defp team_from_classes(["team-nfl-" <> team_abbr | _rest]), do: team_abbr |> Canonicalize.team_abbr
-  defp team_from_classes([_head | rest]), do: team_from_classes(rest)
+  defp tuple_from_game(%{"scoreboard" => %{"home_team" => %{"abbrev" => abbrev}, "homeWP" => prob}}), do: {abbrev, prob}
+  defp tuple_from_game(%{"scoreboard" => %{"home_team" => %{"abbrev" => abbrev}, "pregame_home_wp" => prob}}), do: {abbrev, prob}
 
-  defp probability_from_h4(node) do
-    {prob, "%"} = node |> Floki.find("h4") |> Floki.text |> String.replace(~r/\s/, "") |> Float.parse
-
-    prob / 100 |> Float.round(3)
-  end
+  defp format_tuple({abbrev, prob}), do: {Canonicalize.team_abbr(abbrev), prob / 100 |> Float.round(3)}
 
   def scores(client \\ HttpClient) do
     {:ok, body} = client.get "https://feeds.nfl.com/feeds-rs/scores.json"
