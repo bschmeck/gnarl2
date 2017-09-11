@@ -5,6 +5,11 @@ defmodule Fetcher do
       do: json |> Enum.map(&tuple_from_game/1) |> Enum.map(&format_tuple/1)
   end
 
+  defp tuple_from_game(%{"scoreboard" => %{"home_team" => %{"abbrev" => abbrev}, "game_status" => "FINAL", "home_team_id" => home_id, "winner_id" => winner_id}}) do
+
+    value = if home_id == String.to_integer(winner_id), do: 100, else: 0
+    {abbrev, value}
+  end
   defp tuple_from_game(%{"scoreboard" => %{"home_team" => %{"abbrev" => abbrev}, "homeWP" => prob}}), do: {abbrev, prob}
   defp tuple_from_game(%{"scoreboard" => %{"home_team" => %{"abbrev" => abbrev}, "pregame_home_wp" => prob}}), do: {abbrev, prob}
 

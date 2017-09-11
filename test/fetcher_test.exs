@@ -14,7 +14,7 @@ defmodule FetcherTest do
   test "it fetches probabilities" do
     results = Fetcher.probabilities(HttpStubClient)
     assert Enum.count(results) == 15
-    assert Enum.member? results, {"NE", 0.424}
+    assert Enum.member? results, {"NE", 0.000}
     assert Enum.member? results, {"HOU", 0.679}
     assert Enum.member? results, {"CIN", 0.679}
     assert Enum.member? results, {"WAS", 0.674}
