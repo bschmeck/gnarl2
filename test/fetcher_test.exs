@@ -3,7 +3,7 @@ defmodule HttpStubClient do
     File.read("test/data/scores.json")
   end
 
-  def get("https://nf-api.numberfire.com/v0/gameScores?sport=nfl&week=1") do
+  def get("https://nf-api.numberfire.com/v0/gameScores?sport=nfl") do
     File.read("test/data/numberfire.json")
   end
 end
@@ -12,7 +12,7 @@ defmodule FetcherTest do
   use ExUnit.Case
 
   test "it fetches probabilities" do
-    results = Fetcher.probabilities(HttpStubClient)
+    {2017, 1, results} = Fetcher.probabilities(HttpStubClient)
     assert Enum.count(results) == 15
     assert Enum.member? results, {"NE", 0.000}
     assert Enum.member? results, {"HOU", 0.679}
@@ -32,7 +32,7 @@ defmodule FetcherTest do
   end
 
   test "it fetches scores" do
-    results = Fetcher.scores(HttpStubClient)
+    {2017, 4, results} = Fetcher.scores(HttpStubClient)
     assert Enum.count(results) == 2
 
     game = results |> Enum.at(0)

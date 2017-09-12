@@ -1,8 +1,10 @@
 defmodule Fetcher do
   def probabilities(client \\ HttpClient) do
-    with {:ok, body} <- client.get("https://nf-api.numberfire.com/v0/gameScores?sport=nfl&week=1"),
-         {:ok, json} <- body |> Poison.decode,
-      do: json |> Enum.map(&tuple_from_game/1) |> Enum.map(&format_tuple/1)
+    with {:ok, body} <- client.get("https://nf-api.numberfire.com/v0/gameScores?sport=nfl"),
+         {:ok, [first | _rest] = json} <- body |> Poison.decode,
+         %{"scoreboard" => %{"season" => season, "week" => week}} <- first,
+           probs <- json |> Enum.map(&tuple_from_game/1) |> Enum.map(&format_tuple/1),
+    do: {season, week, probs}
   end
 
   defp tuple_from_game(%{"scoreboard" => %{"home_team" => %{"abbrev" => abbrev}, "game_status" => "FINAL", "home_team_id" => home_id, "winner_id" => winner_id}}) when is_binary(winner_id) do
@@ -16,9 +18,11 @@ defmodule Fetcher do
   defp format_tuple({abbrev, prob}), do: {Canonicalize.team_abbr(abbrev), prob / 100 |> Float.round(3)}
 
   def scores(client \\ HttpClient) do
-    {:ok, body} = client.get "https://feeds.nfl.com/feeds-rs/scores.json"
-
-    body |> parse |> Enum.map(&convert/1)
+    with {:ok, body} <- client.get("https://feeds.nfl.com/feeds-rs/scores.json"),
+         {:ok, json} <- body |> Poison.decode,
+         %{"season" => season, "week" => week, "gameScores" => raw_scores} <- json,
+         game_scores <- raw_scores |> Enum.map(&convert/1),
+    do: {season, week, game_scores}
   end
 
   def parse(body) do
