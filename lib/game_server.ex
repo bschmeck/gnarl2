@@ -7,30 +7,40 @@ defmodule GameServer do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
-  def update_scores(scores) do
-    GenServer.cast(__MODULE__, {:update_scores, scores})
+  def update_scores({season, week, scores}) do
+    GenServer.cast(__MODULE__, {:update_scores, season, week, scores})
   end
 
-  def update_probabilities(probabilities) do
-    GenServer.cast(__MODULE__, {:update_probabilities, probabilities})
+  def update_probabilities({season, week, probabilities}) do
+    GenServer.cast(__MODULE__, {:update_probabilities, season, week, probabilities})
   end
 
-  def games do
-    GenServer.call(__MODULE__, {:games})
+  def games({season, week}) do
+    GenServer.call(__MODULE__, {:games, season, week})
   end
 
   # Server
 
-  def handle_call({:games}, _from, games), do: {:reply, {:ok, games}, games}
+  def handle_call({:games, season, week}, _from, games) do
+    key = week_key_for(season, week)
+    ret = Map.get(games, key)
+    {:reply, {:ok, ret}, games}
+  end
 
-  def handle_cast({:update_scores, scores}, games) do
-    games = update_games_by_scores(games, scores)
+  def handle_cast({:update_scores, season, week, scores}, games) do
+    key = week_key_for(season, week)
+    games_for_week = Map.get(games, key, %{})
+    games_for_week = update_games_by_scores(games_for_week, scores)
+    games = Map.put(games, key, games_for_week)
 
     {:noreply, games}
   end
 
-  def handle_cast({:update_probabilities, probabilities}, games) do
-    games = update_games_by_probabilities(games, probabilities)
+  def handle_cast({:update_probabilities, season, week, probabilities}, games) do
+    key = week_key_for(season, week)
+    games_for_week = Map.get(games, key, %{})
+    games_for_week = update_games_by_probabilities(games_for_week, probabilities)
+    games = Map.put(games, key, games_for_week)
 
     {:noreply, games}
   end
@@ -54,6 +64,8 @@ defmodule GameServer do
                    }
     Map.put(games, key, updated)
   end
+
+  defp week_key_for(season, week), do: "#{season}-#{week}"
 
   defp game_key_for(%Game{away_team: away, home_team: home}), do: "#{away}@#{home}"
 
