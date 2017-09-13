@@ -1,5 +1,5 @@
 defmodule EVTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   test "it computes EV when not all games are picked" do
     outcomes = [%Outcome{winners: ["A0", "A1", "A2"], probability: 0.125}, # score 0

@@ -1,5 +1,5 @@
 defmodule GameServerTest do
-  use ExUnit.Case
+  use ExUnit.Case, aysnc: true
 
   test "it adds new games" do
     state = %{}

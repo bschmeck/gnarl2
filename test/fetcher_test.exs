@@ -9,7 +9,7 @@ defmodule HttpStubClient do
 end
 
 defmodule FetcherTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   test "it fetches probabilities" do
     {2017, 1, results} = Fetcher.probabilities(HttpStubClient)

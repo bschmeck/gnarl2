@@ -1,6 +1,5 @@
 defmodule ProbabilityTest do
-  use ExUnit.Case
-  doctest Gnarl
+  use ExUnit.Case, async: true
 
   test "it works for a single game" do
     games = [%Game{home_team: "A0", home_prob: 0.5, away_team: "B0", away_prob: 0.5}]
