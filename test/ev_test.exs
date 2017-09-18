@@ -51,4 +51,35 @@ defmodule EVTest do
 
     assert dist |> Map.values |> Enum.reduce(fn(a, b) -> a + b end) == 1
   end
+
+  test "when a loss is not possible" do
+    outcomes = [%Outcome{winners: ["A0", "A1"], probability: 0.1},
+                %Outcome{winners: ["A0", "B1"], probability: 0.9}]
+    ev = EV.of(["A0", "B1"], outcomes)
+
+    assert ev.distribution == %{1 => 0.9, 0 => 0.1}
+  end
+
+
+  test "when a win is not possible" do
+    outcomes = [%Outcome{winners: ["A0", "A1"], probability: 0.1},
+                %Outcome{winners: ["A0", "B1"], probability: 0.9}]
+    ev = EV.of(["B0", "B1"], outcomes)
+
+    assert ev.distribution == %{-1 => 0.1, 0 => 0.9}
+  end
+
+  test "when only a win is possible" do
+    outcomes = [%Outcome{winners: ["A0", "A1"], probability: 1.0}]
+    ev = EV.of(["A0", "A1"], outcomes)
+
+    assert ev.distribution == %{1 => 1.0}
+  end
+
+  test "when only a loss is possible" do
+    outcomes = [%Outcome{winners: ["A0", "A1"], probability: 1.0}]
+    ev = EV.of(["B0", "B1"], outcomes)
+
+    assert ev.distribution == %{-1 => 1.0}
+  end
 end

@@ -11,8 +11,8 @@ defmodule PicksServer do
     GenServer.cast(__MODULE__, {:set_picks, picks})
   end
 
-  def ev do
-    GenServer.call(__MODULE__, {:ev})
+  def ev_of(season, week) do
+    GenServer.call(__MODULE__, {:ev, season, week})
   end
 
   # Server
@@ -21,8 +21,8 @@ defmodule PicksServer do
     {:noreply, picks}
   end
 
-  def handle_call({:ev}, _from, picks) do
-    outcomes = with {:ok, games} <- GameServer.games,
+  def handle_call({:ev, season, week}, _from, picks) do
+    outcomes = with {:ok, games} <- GameServer.games({season, week}),
       do: games |> Map.values |> Probability.outcomes
     ev = EV.of picks, outcomes
 
