@@ -7,21 +7,21 @@ defmodule EV do
   def of(picks, outcomes) do
     dist = distribution_of(picks, outcomes)
     ev = ev_of(dist)
-    {win, loss, push} = win_loss_push(dist)
+    {win, loss, push} = aggregate(dist)
 
     %EV{distribution: dist, ev: ev, win: win, loss: loss, push: push}
   end
 
-  defp win_loss_push(distribution) do
-    aggregates = distribution
+  defp aggregate(distribution) do
+    aggs = distribution
        |> Enum.group_by(fn({n, _p}) when n < 0 -> :loss
                          ({n, _p}) when n > 0 -> :win
                          ({0, _p}) -> :push end,
                        fn({_n, p}) -> p end)
 
-    { aggregates |> Map.get(:win, [0]) |> Enum.reduce(&(&1+&2)),
-      aggregates |> Map.get(:loss, [0]) |> Enum.reduce(&(&1+&2)),
-      aggregates |> Map.get(:push, [0]) |> Enum.reduce(&(&1+&2)) }
+    { aggs |> Map.get(:win, [0]) |> Enum.reduce(&(&1+&2)),
+      aggs |> Map.get(:loss, [0]) |> Enum.reduce(&(&1+&2)),
+      aggs |> Map.get(:push, [0]) |> Enum.reduce(&(&1+&2)) }
   end
 
   defp distribution_of(_picks, []), do: %{}
