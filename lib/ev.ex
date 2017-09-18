@@ -13,25 +13,16 @@ defmodule EV do
   end
 
   defp win_loss_push(distribution) do
-    %{loss: loss_odds,
-      win: win_odds,
-      push: push_odds} = distribution
-                         |> Enum.group_by(fn({n, _p}) when n < 0 -> :loss
-                                            ({n, _p}) when n > 0 -> :win
-                                            ({0, _p}) -> :push end,
-                                         fn({_n, p}) -> p end)
-                         |> ensure_keys_exist
+    aggregates = distribution
+       |> Enum.group_by(fn({n, _p}) when n < 0 -> :loss
+                         ({n, _p}) when n > 0 -> :win
+                         ({0, _p}) -> :push end,
+                       fn({_n, p}) -> p end)
 
-    { win_odds |> Enum.reduce(&(&1+&2)),
-      loss_odds |> Enum.reduce(&(&1+&2)),
-      push_odds |> Enum.reduce(&(&1+&2)) }
+    { aggregates |> Map.get(:win, [0]) |> Enum.reduce(&(&1+&2)),
+      aggregates |> Map.get(:loss, [0]) |> Enum.reduce(&(&1+&2)),
+      aggregates |> Map.get(:push, [0]) |> Enum.reduce(&(&1+&2)) }
   end
-
-  defp ensure_keys_exist(%{loss: _, win: _, push: _} = results), do: results
-  defp ensure_keys_exist(%{win: _, push: _} = results), do: results |> Map.put(:loss, [0])
-  defp ensure_keys_exist(%{loss: _, push: _} = results), do: results |> Map.put(:win, [0])
-  defp ensure_keys_exist(%{loss: _} = results), do: results |> Map.put(:win, [0]) |> Map.put(:push, [0])
-  defp ensure_keys_exist(%{win: _} = results), do: results |> Map.put(:loss, [0]) |> Map.put(:push, [0])
 
   defp distribution_of(_picks, []), do: %{}
   defp distribution_of(picks, [outcome | rest]) do
