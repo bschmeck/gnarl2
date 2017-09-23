@@ -4,5 +4,6 @@ defmodule Gnarl.Week do
   schema "weeks" do
     belongs_to :season, Gnarl.Season
     field :number, :integer
+    has_many :games, Gnarl.Game
   end
 end
