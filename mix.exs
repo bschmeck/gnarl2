@@ -15,7 +15,8 @@ defmodule Gnarl.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger]]
+    [extra_applications: [:logger],
+     mod: {Gnarl.Application, []}]
   end
 
   # Dependencies can be Hex packages:
@@ -33,6 +34,8 @@ defmodule Gnarl.Mixfile do
       {:floki, "~> 0.17.0"},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:poison, "~> 3.1"},
+      {:ecto, "~> 2.0"},
+      {:postgrex, "~> 0.11"},
     ]
   end
 end

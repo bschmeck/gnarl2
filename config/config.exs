@@ -8,6 +8,17 @@ use Mix.Config
 # if you want to provide default values for your application for
 # 3rd-party users, it should be done in your "mix.exs" file.
 
+# In your config/config.exs file
+config :gnarl, ecto_repos: [Gnarl.Repo]
+
+config :gnarl, Gnarl.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  database: "ecto_simple",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  port: "5432"
+
 # You can configure for your application as:
 #
 #     config :gnarl, key: :value
