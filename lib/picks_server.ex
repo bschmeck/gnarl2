@@ -18,6 +18,8 @@ defmodule PicksServer do
   # Server
 
   def handle_cast({:set_picks, picks}, _old_picks) do
+    picks = picks |> Enum.map(fn(p) -> Canonicalize.team_abbr(p) end)
+
     {:noreply, picks}
   end
 
