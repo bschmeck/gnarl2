@@ -8,6 +8,7 @@ defmodule Gnarl.Application do
 
     children = [
       supervisor(Gnarl.Repo, []),
+      worker(GameServer, [])
     ]
 
     opts = [strategy: :one_for_one, name: Gnarl.Supervisor]
