@@ -36,6 +36,7 @@ defmodule Gnarl.Mixfile do
       {:poison, "~> 3.1"},
       {:ecto, "~> 2.0"},
       {:postgrex, "~> 0.11"},
+      {:quixir, "~> 0.9", only: :test}
     ]
   end
 end
