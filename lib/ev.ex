@@ -19,9 +19,9 @@ defmodule EV do
                          ({0, _p}) -> :push end,
                        fn({_n, p}) -> p end)
 
-    { aggs |> Map.get(:win, [0]) |> Enum.reduce(&(&1+&2)),
-      aggs |> Map.get(:loss, [0]) |> Enum.reduce(&(&1+&2)),
-      aggs |> Map.get(:push, [0]) |> Enum.reduce(&(&1+&2)) }
+    {aggs |> Map.get(:win, [0]) |> Enum.reduce(&(&1 + &2)),
+     aggs |> Map.get(:loss, [0]) |> Enum.reduce(&(&1 + &2)),
+     aggs |> Map.get(:push, [0]) |> Enum.reduce(&(&1 + &2))}
   end
 
   defp distribution_of(_picks, []), do: %{}

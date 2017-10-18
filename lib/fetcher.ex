@@ -15,7 +15,7 @@ defmodule Fetcher do
   defp tuple_from_game(%{"scoreboard" => %{"home_team" => %{"abbrev" => abbrev}, "homeWP" => prob}}), do: {abbrev, prob}
   defp tuple_from_game(%{"scoreboard" => %{"home_team" => %{"abbrev" => abbrev}, "pregame_home_wp" => prob}}), do: {abbrev, prob}
 
-  defp format_tuple({abbrev, prob}), do: {Canonicalize.team_abbr(abbrev), prob / 100 |> Float.round(3)}
+  defp format_tuple({abbrev, prob}), do: {Canonicalize.team_abbr(abbrev), Float.round(prob / 100, 3)}
 
   def scores(client \\ HttpClient) do
     with {:ok, body} <- client.get("https://feeds.nfl.com/feeds-rs/scores.json"),
