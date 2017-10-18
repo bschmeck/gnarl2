@@ -23,7 +23,7 @@ defmodule FetcherTest do
     assert Enum.member? results, {"TEN", 0.61}
     assert Enum.member? results, {"DET", 0.434}
     assert Enum.member? results, {"CHI", 0.295}
-    assert Enum.member? results, {"LAR", 0.489}
+    assert Enum.member? results, {"LA", 0.489}
     assert Enum.member? results, {"SF", 0.347}
     assert Enum.member? results, {"GB", 0.694}
     assert Enum.member? results, {"DAL", 0.779}
