@@ -1,5 +1,6 @@
 defmodule ProbabilityTest do
   use ExUnit.Case, async: true
+  use Quixir
 
   test "it works for a single game" do
     games = [%Game{home_team: "A0", home_prob: 0.5, away_team: "B0", away_prob: 0.5}]
@@ -9,14 +10,23 @@ defmodule ProbabilityTest do
   end
 
   test "it computes probabilities" do
-    games = [
-      %Game{home_team: "A0", home_prob: 0.75, away_team: "B0", away_prob: 0.25},
-      %Game{home_team: "A1", home_prob: 0.75, away_team: "B1", away_prob: 0.25},
-      %Game{home_team: "A2", home_prob: 0.75, away_team: "B2", away_prob: 0.25},
-      %Game{home_team: "A3", home_prob: 0.75, away_team: "B3", away_prob: 0.25}
-    ]
-    outcomes = Probability.outcomes(games)
-    assert Enum.member?(outcomes, %Outcome{winners: ~w(B0 B1 B2 B3), probability: :math.pow(0.25, 4)})
+    ptest games: list(of: Pollution.VG.struct(%Game{home_team: string(min: 2, max: 3, chars: :upper),
+                                                home_prob: float(min: 0.0, max: 1.0),
+                                                home_score: positive_int(),
+                                                away_team: string(min: 2, max: 3, chars: :upper),
+                                                away_score: positive_int(),
+                                                time_left: string(chars: :printable, max: 5)
+                                               }), min: 1, max: 16) do
+      outcomes = games
+      |> Enum.map(fn(game) -> %Game{game | away_prob: 1 - game.home_prob} end)
+      |> Probability.outcomes
+
+      for outcome <- outcomes do
+        assert outcome.probability >= 0 && outcome.probability <= 1
+      end
+
+      assert_in_delta Enum.map(outcomes, &(&1.probability)) |> Enum.reduce(&(&1 + &2)), 1.0, 0.0000001
+    end
   end
 
   test "it computes all possible outcomes" do
