@@ -19,8 +19,9 @@ defmodule GnarlWeb.Router do
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", GnarlWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", GnarlWeb do
+    pipe_through :api
+
+    get "/ev", ApiController, :ev
+  end
 end
