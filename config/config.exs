@@ -1,41 +1,27 @@
 # This file is responsible for configuring your application
 # and its dependencies with the aid of the Mix.Config module.
+#
+# This configuration file is loaded before any dependency and
+# is restricted to this project.
 use Mix.Config
 
-# This configuration is loaded before any dependency and is restricted
-# to this project. If another project depends on this project, this
-# file won't be loaded nor affect the parent project. For this reason,
-# if you want to provide default values for your application for
-# 3rd-party users, it should be done in your "mix.exs" file.
+# General application configuration
+config :gnarl,
+  ecto_repos: [Gnarl.Repo]
 
-# In your config/config.exs file
-config :gnarl, ecto_repos: [Gnarl.Repo]
+# Configures the endpoint
+config :gnarl, GnarlWeb.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "1NzT1X+jb5YVJ11DatwWbua7Wh4JPN9TngyxAbj5K32co5khN0ubHW6BBNK0Vjuq",
+  render_errors: [view: GnarlWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: Gnarl.PubSub,
+           adapter: Phoenix.PubSub.PG2]
 
-config :gnarl, Gnarl.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  database: "ecto_simple",
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  port: "5432"
+# Configures Elixir's Logger
+config :logger, :console,
+  format: "$time $metadata[$level] $message\n",
+  metadata: [:request_id]
 
-# You can configure for your application as:
-#
-#     config :gnarl, key: :value
-#
-# And access this configuration in your application as:
-#
-#     Application.get_env(:gnarl, :key)
-#
-# Or configure a 3rd-party app:
-#
-#     config :logger, level: :info
-#
-
-# It is also possible to import configuration files, relative to this
-# directory. For example, you can emulate configuration per environment
-# by uncommenting the line below and defining dev.exs, test.exs and such.
-# Configuration from the imported file will override the ones defined
-# here (which is why it is important to import them last).
-#
-#     import_config "#{Mix.env}.exs"
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{Mix.env}.exs"
