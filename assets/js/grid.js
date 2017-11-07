@@ -45,7 +45,7 @@ window.Grid.include({
     brian: "",
     brian_games: 0,
     interval: 0,
-    scores_url: "scores/",
+    scores_url: "api/scores/",
     init: function(ben_teams, brian_teams, interval) {
         this.ben = new Player("Ben", true, ben_teams);
         this.brian = new Player("Brian", false, brian_teams);

@@ -23,5 +23,6 @@ defmodule GnarlWeb.Router do
     pipe_through :api
 
     get "/ev", ApiController, :ev
+    get "/scores", ApiController, :scores
   end
 end
