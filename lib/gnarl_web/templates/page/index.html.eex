@@ -1,36 +1,39 @@
-<div class="jumbotron">
-  <h2><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h2>
-  <p class="lead">A productive web framework that<br />does not compromise speed and maintainability.</p>
+<div class="box legend loss4"><strong>-14 &gt; &Delta; </strong></div>
+<div class="box legend loss3"><strong>-14 &le; &Delta; &lt; -7</strong></div>
+<div class="box legend loss2"><strong>-7 &le; &Delta; &lt; -3</strong></div>
+<div class="box legend loss1"><strong>-3 &le; &Delta; &lt; 0</strong></div>
+<div class="box legend tied"><strong>Tied</strong></div>
+<div class="box legend win1"><strong>0 &lt; &Delta; &le; 3</strong></div>
+<div class="box legend win2"><strong>3 &lt; &Delta; &le; 7</strong></div>
+<div class="box legend win3"><strong>7 &lt; &Delta; &le; 14</strong></div>
+<div class="box legend win4"><strong>&Delta; &gt; 14</strong></div>
+<div class="clear"></div>
+
+<div id="ben_games" class="games">
 </div>
 
-<div class="row marketing">
-  <div class="col-lg-6">
-    <h4>Resources</h4>
-    <ul>
-      <li>
-        <a href="http://phoenixframework.org/docs/overview">Guides</a>
-      </li>
-      <li>
-        <a href="https://hexdocs.pm/phoenix">Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-    </ul>
+<div class="sidebar box" id="scoreboard">
+  <div id="current_wins"></div>
+  <div id="final_wins"></div>
+  <div id="ben_wins">
+    <span class="name">Ben</span><br>
+    <span class="current">0</span> / <span class="wins">0</span> Max <span class="max_wins">0</span><br>
   </div>
-
-  <div class="col-lg-6">
-    <h4>Help</h4>
-    <ul>
-      <li>
-        <a href="http://groups.google.com/group/phoenix-talk">Mailing list</a>
-      </li>
-      <li>
-        <a href="http://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">@elixirphoenix</a>
-      </li>
-    </ul>
+  <div id="brian_wins">
+    <span class="name">Brian</span><br>
+    <span class="current">0</span> / <span class="wins">0</span> Max <span class="max_wins">0</span><br>
   </div>
+  <span class="good_guy_title">Good Guy:</span><br>
+  <span class="good_guy_choice good_guy">Ben</span>
+  <span class="good_guy_choice bad_guy">Brian</span><br>
 </div>
+
+<div id="brian_games" class="games">
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+  g = new Grid(["GB", "DAL"], ["SEA", "HOU"], 3000)
+  g.start();
+  });
+</script>
