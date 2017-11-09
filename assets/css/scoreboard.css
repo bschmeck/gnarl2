@@ -12,7 +12,7 @@ body {
 .name {
     font-size: 48px;
 }
-.current {
+.current, .probability {
     font-size: 42px;
 }
 #ben_wins, #brian_wins {
@@ -46,7 +46,7 @@ table.score {
 .good_guy_choice {
     cursor: pointer;
 }
-.games { 
+.games {
     float: left;
 }
 .box {

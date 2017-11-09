@@ -46,6 +46,7 @@ window.Grid.include({
     brian_games: 0,
     interval: 0,
     scores_url: "api/scores/",
+    ev_url: "api/ev/",
     init: function(ben_teams, brian_teams, interval) {
         this.ben = new Player("Ben", true, ben_teams);
         this.brian = new Player("Brian", false, brian_teams);
@@ -111,6 +112,7 @@ window.Grid.include({
 
         /* Pull down the game data. */
         $.get(this.scores_url, this.proxy(this.got_scores), "json");
+        $.get(this.ev_url, this.proxy(this.got_ev), "json");
     },
     got_scores: function(data) {
         /* Turn JSON into an array of games. */
@@ -119,6 +121,15 @@ window.Grid.include({
         if (this.interval > 0) {
             setTimeout(this.proxy(function() {
                 $.get(this.scores_url, this.proxy(this.got_scores), "json");
+            }), this.interval);
+        }
+    },
+    got_ev: function(data) {
+        /* Turn JSON into an array of games. */
+        this.update_ev(data);
+        if (this.interval > 0) {
+            setTimeout(this.proxy(function() {
+                $.get(this.ev_url, this.proxy(this.got_ev), "json");
             }), this.interval);
         }
     },
@@ -293,7 +304,13 @@ window.Grid.include({
             this.brian.update(game);
         }
         this.update_wins();
-    }
+    },
+  update_ev: function(ev_data) {
+    this.ben.probability = ev_data.win;
+    this.brian.probability = ev_data.loss;
+    $("#ben_wins > .probability").text(this.ben.display_probability());
+    $("#brian_wins > .probability").text(this.brian.display_probability());
+  }
 });
 
 // Player.init(name, is_good_guy);
@@ -307,11 +324,15 @@ Player.include({
     max_wins: 0,
     picked_wins: 0,
     picked_finals: 0,
+    probability: 0,
     init: function(name, is_good_guy, teams) {
         this.name = name;
         this.is_good_guy = is_good_guy;
         this.teams = teams;
         this.reset_wins();
+    },
+    display_probability: function() {
+      return Math.round(this.probability * 100) + "%";
     },
     reset_wins: function() {
         this.current_wins = 0;

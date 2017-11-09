@@ -17,10 +17,12 @@
   <div id="final_wins"></div>
   <div id="ben_wins">
     <span class="name">Ben</span><br>
+    <span class="probability">0%</span><br>
     <span class="current">0</span> / <span class="wins">0</span> Max <span class="max_wins">0</span><br>
   </div>
   <div id="brian_wins">
     <span class="name">Brian</span><br>
+    <span class="probability">0%</span><br>
     <span class="current">0</span> / <span class="wins">0</span> Max <span class="max_wins">0</span><br>
   </div>
   <span class="good_guy_title">Good Guy:</span><br>
