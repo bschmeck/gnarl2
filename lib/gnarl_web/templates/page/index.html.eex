@@ -35,7 +35,7 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-  g = new Grid(["PHI", "SEA", "LAR", "BUF", "KC", "DET", "IND", "TB", "CIN", "BAL", "MIA", "ATL"], ["HOU", "NO", "JAC", "TEN", "OAK", "CAR", "DEN", "WAS", "NYG", "NYJ", "DAL", "GB"], 30000)
+  g = new Grid(["LAR", "CAR", "TEN", "JAC", "MIN", "NO", "NYG", "CLE", "IND", "DEN", "GB", "ARI", "TB", "ATL"], ["HOU", "MIA", "CIN", "LAC", "WAS", "BUF", "SF", "DET", "PIT", "NE", "CHI", "SEA", "NYJ", "DAL"], 30000)
   g.start();
   });
 </script>
