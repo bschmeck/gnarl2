@@ -11,6 +11,10 @@ defmodule PicksServer do
     GenServer.cast(__MODULE__, {:set_picks, picks})
   end
 
+  def get_picks do
+    GenServer.call(__MODULE__, {:get_picks})
+  end
+
   def ev_of(season, week) do
     GenServer.call(__MODULE__, {:ev, season, week})
   end
@@ -21,6 +25,10 @@ defmodule PicksServer do
     picks = picks |> Enum.map(fn(p) -> Canonicalize.team_abbr(p) end)
 
     {:noreply, picks}
+  end
+
+  def handle_call({:get_picks}, _from, picks) do
+    {:reply, {:ok, picks}, picks}
   end
 
   def handle_call({:ev, season, week}, _from, picks) do
