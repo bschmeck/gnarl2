@@ -49,7 +49,8 @@ defmodule Fetcher do
   end
 
   def time_left(%{"score" => nil}), do: "PREGAME"
-  def time_left(%{"score" => %{"phase" => "FINAL"}}), do: "FINAL"
+  def time_left(%{"score" => %{"phase" => "FINAL"}}), do: "Final"
+  def time_left(%{"score" => %{"phase" => "FINAL_OVERTIME"}}), do: "Final"
   def time_left(%{"score" => %{"phase" => "HALFTIME"}}), do: "HALFTIME"
   def time_left(%{"score" => %{"phase" => "PREGAME"}}), do: "PREGAME"
 
