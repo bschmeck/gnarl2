@@ -13,7 +13,8 @@ defmodule Gnarl.Application do
       # Start the endpoint when the application starts
       supervisor(GnarlWeb.Endpoint, []),
       worker(GameServer, []),
-      worker(PicksServer, [])
+      worker(PicksServer, []),
+      worker(Gnarl.Updater, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
