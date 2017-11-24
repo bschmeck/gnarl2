@@ -21,10 +21,11 @@ defmodule GnarlWeb.ApiController do
       end)
 
       his_scores = his |> Enum.map(fn pick ->
-        %{fields: games
-        |> game_for(pick)
+        game = games |> game_for(pick)
+        picked_team = other_team(pick, game)
+        %{fields: game
         |> Map.from_struct
-        |> Map.put("picked_team", pick)
+        |> Map.put("picked_team", picked_team)
         |> Map.put("picker", "BRIAN")}
       end)
 
@@ -39,4 +40,7 @@ defmodule GnarlWeb.ApiController do
       {_key, _game} -> false
     end) |> elem(1)
   end
+
+  defp other_team(team, %Game{home_team: team, away_team: other}), do: other
+  defp other_team(team, %Game{away_team: team, home_team: other}), do: other
 end
