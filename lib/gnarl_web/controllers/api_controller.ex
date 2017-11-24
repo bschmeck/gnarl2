@@ -2,13 +2,13 @@ defmodule GnarlWeb.ApiController do
   use GnarlWeb, :controller
 
   def ev(conn, _params) do
-    with {:ok, ev} <- PicksServer.ev_of(2017, 10) do
+    with {:ok, ev} <- PicksServer.ev_of(2017, 12) do
       json conn, ev |> Map.from_struct
     end
   end
 
   def scores(conn, _params) do
-    with {:ok, games} <- GameServer.games({2017, 10}),
+    with {:ok, games} <- GameServer.games({2017, 12}),
          {:ok, picks} <- PicksServer.get_picks do
       count = Enum.count(picks)
       {mine, his} = Enum.split(picks, div(count, 2))
