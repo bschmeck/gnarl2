@@ -2,6 +2,11 @@ defmodule GnarlWeb.PageController do
   use GnarlWeb, :controller
 
   def index(conn, _params) do
-    render conn, "index.html"
+    {:ok, {season, week}} = PicksServer.current_week
+
+    conn
+    |> assign(:season, season)
+    |> assign(:week, week)
+    |> render("index.html")
   end
 end

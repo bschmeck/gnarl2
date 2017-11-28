@@ -19,6 +19,9 @@ defmodule PicksServer do
     GenServer.call(__MODULE__, {:ev, season, week})
   end
 
+  def current_week do
+    {:ok, {2017, 12}}
+  end
   # Server
 
   def handle_cast({:set_picks, picks}, _old_picks) do

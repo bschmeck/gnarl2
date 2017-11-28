@@ -45,12 +45,14 @@ window.Grid.include({
     brian: "",
     brian_games: 0,
     interval: 0,
-    scores_url: "api/2017/12/scores/",
-    ev_url: "api/ev/",
-    init: function(ben_teams, brian_teams, interval) {
+    scores_url: "",
+    ev_url: "",
+    init: function(season, week, ben_teams, brian_teams, interval) {
         this.ben = new Player("Ben", true, ben_teams);
         this.brian = new Player("Brian", false, brian_teams);
         this.interval = interval;
+        this.scores_url = "api/" + season + "/" + week + "/scores/";
+        this.ev_url = "api/" + season + "/" + week + "/ev/";
     },
     configAjax: function() {
         $(document).ajaxSend(function(event, xhr, settings) {

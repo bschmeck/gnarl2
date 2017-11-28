@@ -22,7 +22,7 @@ defmodule GnarlWeb.Router do
   scope "/api", GnarlWeb do
     pipe_through :api
 
-    get "/ev", ApiController, :ev
+    get "/:season/:week/ev", ApiController, :ev
     get "/:season/:week/scores", ApiController, :scores
   end
 end

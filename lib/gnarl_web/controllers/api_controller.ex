@@ -1,8 +1,15 @@
 defmodule GnarlWeb.ApiController do
   use GnarlWeb, :controller
 
-  def ev(conn, _params) do
-    with {:ok, ev} <- PicksServer.ev_of(2017, 12) do
+  def ev(conn, %{"season" => season, "week" => week}) when is_binary(season) and is_binary(week) do
+    {season, ""} = Integer.parse(season)
+    {week, ""} = Integer.parse(week)
+
+    ev(conn, %{"season" => season, "week" => week})
+  end
+
+  def ev(conn, %{"season" => season, "week" => week}) when season >= 2017 and week in (1..17) do
+    with {:ok, ev} <- PicksServer.ev_of(season, week) do
       json conn, ev |> Map.from_struct
     end
   end
