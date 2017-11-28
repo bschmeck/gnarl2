@@ -23,7 +23,7 @@ defmodule GnarlWeb.ApiController do
 
   def scores(conn, %{"season" => season, "week" => week}) when season >= 2017 and week in (1..17) do
     with {:ok, games} <- GameServer.games({season, week}),
-         {:ok, picks} <- PicksServer.get_picks do
+         {:ok, picks} <- PicksServer.picks_for(season, week) do
       count = Enum.count(picks)
       {mine, his} = Enum.split(picks, div(count, 2))
       my_scores = mine |> Enum.map(fn pick ->

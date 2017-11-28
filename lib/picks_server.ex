@@ -4,15 +4,15 @@ defmodule PicksServer do
   # Client
 
   def start_link do
-    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
-  def set_picks(picks) do
-    GenServer.cast(__MODULE__, {:set_picks, picks})
+  def set_picks(season, week, picks) do
+    GenServer.cast(__MODULE__, {:set_picks, season, week, picks})
   end
 
-  def get_picks do
-    GenServer.call(__MODULE__, {:get_picks})
+  def picks_for(season, week) do
+    GenServer.call(__MODULE__, {:get_picks, season, week})
   end
 
   def ev_of(season, week) do
@@ -24,21 +24,30 @@ defmodule PicksServer do
   end
   # Server
 
-  def handle_cast({:set_picks, picks}, _old_picks) do
+  def handle_cast({:set_picks, season, week, picks}, all_picks) do
     picks = picks |> Enum.map(fn(p) -> Canonicalize.team_abbr(p) end)
+    key = key_for(season, week)
+    all_picks = Map.put(all_picks, key, picks)
 
-    {:noreply, picks}
+    {:noreply, all_picks}
   end
 
-  def handle_call({:get_picks}, _from, picks) do
-    {:reply, {:ok, picks}, picks}
+  def handle_call({:get_picks, season, week}, _from, picks) do
+    key = key_for(season, week)
+    week_picks = Map.get(picks, key, [])
+
+    {:reply, {:ok, week_picks}, picks}
   end
 
   def handle_call({:ev, season, week}, _from, picks) do
+    key = key_for(season, week)
+    week_picks = Map.get(picks, key, [])
     outcomes = with {:ok, games} <- GameServer.games({season, week}),
       do: games |> Map.values |> Probability.outcomes
-    ev = EV.of picks, outcomes
+    ev = EV.of week_picks, outcomes
 
     {:reply, {:ok, ev}, picks}
   end
+
+  def key_for(season, week), do: "#{season}-#{week}"
 end
