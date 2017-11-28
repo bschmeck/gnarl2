@@ -7,8 +7,15 @@ defmodule GnarlWeb.ApiController do
     end
   end
 
-  def scores(conn, _params) do
-    with {:ok, games} <- GameServer.games({2017, 12}),
+  def scores(conn, %{"season" => season, "week" => week}) when is_binary(season) and is_binary(week) do
+    {season, ""} = Integer.parse(season)
+    {week, ""} = Integer.parse(week)
+
+    scores(conn, %{"season" => season, "week" => week})
+  end
+
+  def scores(conn, %{"season" => season, "week" => week}) when season >= 2017 and week in (1..17) do
+    with {:ok, games} <- GameServer.games({season, week}),
          {:ok, picks} <- PicksServer.get_picks do
       count = Enum.count(picks)
       {mine, his} = Enum.split(picks, div(count, 2))
