@@ -4,7 +4,9 @@ defmodule PicksServer do
   # Client
 
   def start_link do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+    default_week = {2017, 1}
+    state = %{current_week: default_week, picks: %{} }
+    GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
   def set_picks(season, week, picks) do
@@ -22,38 +24,41 @@ defmodule PicksServer do
   def current_week do
     GenServer.call(__MODULE__, {:current_week})
   end
+
   # Server
 
-  def handle_cast({:set_picks, season, week, picks}, all_picks) do
+  def handle_cast({:set_picks, season, week, picks}, state = %{current_week: current_week, picks: all_picks}) do
     picks = picks |> Enum.map(fn(p) -> Canonicalize.team_abbr(p) end)
-    key = key_for(season, week)
-    all_picks = Map.put(all_picks, key, picks)
 
-    {:noreply, all_picks}
+    week = {season, week}
+    all_picks = Map.put(all_picks, week, picks)
+    current_week = if week > current_week, do: week, else: current_week
+
+    state = state
+    |> Map.put(:picks, all_picks)
+    |> Map.put(:current_week, current_week)
+
+    {:noreply, state}
   end
 
-  def handle_call({:current_week}, _from, picks) do
-    week = picks |> Map.keys |> Enum.max
-
-    {:reply, {:ok, week}, picks}
+  def handle_call({:current_week}, _from, state = %{current_week: week}) do
+    {:reply, {:ok, week}, state}
   end
 
-  def handle_call({:get_picks, season, week}, _from, picks) do
-    key = key_for(season, week)
-    week_picks = Map.get(picks, key, [])
+  def handle_call({:get_picks, season, week}, _from, state = %{picks: picks}) do
+    week = {season, week}
+    week_picks = Map.get(picks, week, [])
 
-    {:reply, {:ok, week_picks}, picks}
+    {:reply, {:ok, week_picks}, state}
   end
 
-  def handle_call({:ev, season, week}, _from, picks) do
-    key = key_for(season, week)
-    week_picks = Map.get(picks, key, [])
+  def handle_call({:ev, season, week}, _from, state = %{picks: picks}) do
+    week_key = {season, week}
+    week_picks = Map.get(picks, week_key, [])
     outcomes = with {:ok, games} <- GameServer.games({season, week}),
       do: games |> Map.values |> Probability.outcomes
     ev = EV.of week_picks, outcomes
 
-    {:reply, {:ok, ev}, picks}
+    {:reply, {:ok, ev}, state}
   end
-
-  def key_for(season, week), do: {season, week}
 end
