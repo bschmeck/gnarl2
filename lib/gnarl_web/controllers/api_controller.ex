@@ -9,9 +9,12 @@ defmodule GnarlWeb.ApiController do
   end
 
   def ev(conn, %{"season" => season, "week" => week}) when season >= 2017 and week in (1..17) do
-    with {:ok, ev} <- PicksServer.ev_of(season, week) do
-      json conn, ev |> Map.from_struct
-    end
+    {:ok, picks} = PicksServer.picks_for(season, week)
+    outcomes = with {:ok, games} <- GameServer.games({season, week}),
+      do: games |> Map.values |> Probability.outcomes
+    ev = EV.of picks, outcomes
+
+    json conn, ev |> Map.from_struct
   end
 
   def scores(conn, %{"season" => season, "week" => week}) when is_binary(season) and is_binary(week) do

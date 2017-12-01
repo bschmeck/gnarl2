@@ -17,10 +17,6 @@ defmodule PicksServer do
     GenServer.call(__MODULE__, {:get_picks, season, week})
   end
 
-  def ev_of(season, week) do
-    GenServer.call(__MODULE__, {:ev, season, week})
-  end
-
   def current_week do
     GenServer.call(__MODULE__, {:current_week})
   end
@@ -50,15 +46,5 @@ defmodule PicksServer do
     week_picks = Map.get(picks, week, [])
 
     {:reply, {:ok, week_picks}, state}
-  end
-
-  def handle_call({:ev, season, week}, _from, state = %{picks: picks}) do
-    week_key = {season, week}
-    week_picks = Map.get(picks, week_key, [])
-    outcomes = with {:ok, games} <- GameServer.games({season, week}),
-      do: games |> Map.values |> Probability.outcomes
-    ev = EV.of week_picks, outcomes
-
-    {:reply, {:ok, ev}, state}
   end
 end
