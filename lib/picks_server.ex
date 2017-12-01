@@ -20,7 +20,7 @@ defmodule PicksServer do
   end
 
   def current_week do
-    {:ok, {2017, 12}}
+    GenServer.call(__MODULE__, {:current_week})
   end
   # Server
 
@@ -30,6 +30,12 @@ defmodule PicksServer do
     all_picks = Map.put(all_picks, key, picks)
 
     {:noreply, all_picks}
+  end
+
+  def handle_call({:current_week}, _from, picks) do
+    week = picks |> Map.keys |> Enum.max
+
+    {:reply, {:ok, week}, picks}
   end
 
   def handle_call({:get_picks, season, week}, _from, picks) do
@@ -49,5 +55,5 @@ defmodule PicksServer do
     {:reply, {:ok, ev}, picks}
   end
 
-  def key_for(season, week), do: "#{season}-#{week}"
+  def key_for(season, week), do: {season, week}
 end
