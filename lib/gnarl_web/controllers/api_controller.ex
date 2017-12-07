@@ -9,10 +9,17 @@ defmodule GnarlWeb.ApiController do
   end
 
   def ev(conn, %{"season" => season, "week" => week}) when season >= 2017 and week in (1..17) do
-    {:ok, picks} = PicksServer.picks_for(season, week)
-    outcomes = with {:ok, games} <- GameServer.games({season, week}),
-      do: games |> Map.values |> Probability.outcomes
-    ev = EV.of picks, outcomes
+    ev = with {:ok, picks} <- PicksServer.picks_for(season, week),
+              {:ok, games} <- GameServer.games({season, week})
+         do
+           outcomes = games |> Map.values |> Probability.outcomes
+           picks = picks |> Enum.map(fn
+             %Gnarl.Pick{winner: pick, picker: "BEN"} -> pick
+             %Gnarl.Pick{winner: pick} -> games |> game_for(pick) |> other_team(pick)
+           end)
+
+           EV.of picks, outcomes
+         end
 
     json conn, ev |> Map.from_struct
   end
@@ -27,26 +34,18 @@ defmodule GnarlWeb.ApiController do
   def scores(conn, %{"season" => season, "week" => week}) when season >= 2017 and week in (1..17) do
     with {:ok, games} <- GameServer.games({season, week}),
          {:ok, picks} <- PicksServer.picks_for(season, week) do
-      count = Enum.count(picks)
-      {mine, his} = Enum.split(picks, div(count, 2))
-      my_scores = mine |> Enum.map(fn pick ->
+
+      scores = picks
+      |> Enum.sort_by(fn %Gnarl.Pick{slot: slot} -> slot end)
+      |> Enum.map(fn %Gnarl.Pick{winner: pick, picker: picker} ->
         %{fields: games
         |> game_for(pick)
         |> Map.from_struct
         |> Map.put("picked_team", pick)
-        |> Map.put("picker", "BEN")}
+        |> Map.put("picker", picker)}
       end)
 
-      his_scores = his |> Enum.map(fn pick ->
-        game = games |> game_for(pick)
-        picked_team = other_team(pick, game)
-        %{fields: game
-        |> Map.from_struct
-        |> Map.put("picked_team", picked_team)
-        |> Map.put("picker", "BRIAN")}
-      end)
-
-      json conn, my_scores ++ his_scores
+      json conn, scores
     end
   end
 
@@ -58,6 +57,6 @@ defmodule GnarlWeb.ApiController do
     end) |> elem(1)
   end
 
-  defp other_team(team, %Game{home_team: team, away_team: other}), do: other
-  defp other_team(team, %Game{away_team: team, home_team: other}), do: other
+  defp other_team(%Game{home_team: team, away_team: other}, team), do: other
+  defp other_team(%Game{away_team: team, home_team: other}, team), do: other
 end

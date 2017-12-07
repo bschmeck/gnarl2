@@ -35,7 +35,7 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-  g = new Grid(<%= @season %>, <%= @week %>, ["NE", "ATL", "CIN", "SEA", "CAR", "TEN", "LAC", "NO", "GB", "CHI", "BUF", "NYG", "ARI", "HOU", "DET", "DEN"], ["MIA", "TB", "CLE", "SF", "NYJ", "IND", "DAL", "LAR", "PIT", "PHI", "KC", "WAS", "JAX", "BAL", "MIN", "OAK"], 30000)
+  g = new Grid(<%= @season %>, <%= @week %>, <%= {:safe, Poison.encode!(@ben_teams)} %>, <%= {:safe, Poison.encode!(@brian_teams)} %>, 30000)
   g.start();
   });
 </script>
