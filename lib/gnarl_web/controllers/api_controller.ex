@@ -37,12 +37,14 @@ defmodule GnarlWeb.ApiController do
 
       scores = picks
       |> Enum.sort_by(fn %Gnarl.Pick{slot: slot} -> slot end)
-      |> Enum.map(fn %Gnarl.Pick{winner: pick, picker: picker} ->
+      |> Enum.map(fn pick = %Gnarl.Pick{} ->
         %{fields: games
-        |> game_for(pick)
+        |> game_for(pick.winner)
         |> Map.from_struct
-        |> Map.put("picked_team", pick)
-        |> Map.put("picker", picker)}
+        |> Map.put("picked_team", pick.winner)
+        |> Map.put("picker", pick.picker)
+        |> Map.put("anti_lock", pick.antilock)
+        |> Map.put("lock", pick.lock)}
       end)
 
       json conn, scores
