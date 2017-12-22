@@ -17,6 +17,7 @@ defmodule GnarlWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/admin", PageController, :admin
   end
 
   scope "/api", GnarlWeb do
