@@ -26,15 +26,6 @@ defmodule GnarlWeb.PageController do
     |> render("index.html")
   end
 
-  def admin(conn, _params) do
-    {:ok, {season, week}} = PicksServer.current_week
-
-    conn
-    |> assign(:season, season)
-    |> assign(:week, week)
-    |> render("admin.html")
-  end
-
   defp game_for(games, team) do
     games |> Enum.find(fn
       {_key, %Game{home_team: ^team}} -> true

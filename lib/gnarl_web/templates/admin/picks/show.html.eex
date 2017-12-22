@@ -1,13 +1,4 @@
-<form action="admin" method="post">
-  <select>
-    <option>2017</option>
-  </select>
-  <select>
-    <%= for i <- (1..17) do %>
-      <option <%= if i == @week, do: "selected" %>><%= i %></option>
-    <% end %>
-  </select>
-  <br/>
+<form method="post">
   <input type="textbox" id="ben_picks" name="ben_picks" placeholder="Ben's Picks"/><br/>
   <input type="textbox" id="ben_lock" name="ben_lock" placeholder="Ben's Lock"/><br/>
   <input type="textbox" id="ben_anti_lock" name="ben_anti_lock" placeholder="Ben's Anti-Lock"/><br/>
