@@ -1,9 +1,9 @@
-<form method="post">
-  <input type="textbox" id="ben_picks" name="ben_picks" placeholder="Ben's Picks"/><br/>
-  <input type="textbox" id="ben_lock" name="ben_lock" placeholder="Ben's Lock"/><br/>
-  <input type="textbox" id="ben_anti_lock" name="ben_anti_lock" placeholder="Ben's Anti-Lock"/><br/>
-  <input type="textbox" id="brian_picks" name="brian_picks" placeholder="Brian's Picks"/><br/>
-  <input type="textbox" id="brian_lock" name="brian_lock" placeholder="Brian's Lock"/><br/>
-  <input type="textbox" id="brian_anti_lock" name="brian_anti_lock" placeholder="Brian's Anti-Lock"/><br/>
-  <input type="submit"/>
-</form>
+<%= form_for @conn, picks_path(@conn, :create, @season, @week), [as: :create], fn f -> %>
+  <%= text_input f, :ben_picks, placeholder: "Ben's Picks" %>
+  <%= text_input f, :ben_lock, placeholder: "Ben's Lock" %>
+  <%= text_input f, :ben_anti_lock, placeholder: "Ben's Anti-Lock" %>
+  <%= text_input f, :brian_picks, placeholder: "Brian's Picks" %>
+  <%= text_input f, :brian_lock, placeholder: "Brian's Lock" %>
+  <%= text_input f, :brian_anti_lock, placeholder: "Brian's Anti-Lock" %>
+  <%= submit "Submit" %>
+<% end %>
