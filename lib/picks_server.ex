@@ -24,7 +24,7 @@ defmodule PicksServer do
   # Server
 
   def handle_cast({:set_picks, season, week, picks}, state = %{current_week: current_week, picks: all_picks}) do
-    picks = picks |> Enum.map(fn(p) -> Canonicalize.team_abbr(p) end)
+    picks = canonicalize(picks)
 
     week = {season, week}
     all_picks = Map.put(all_picks, week, picks)
@@ -35,6 +35,11 @@ defmodule PicksServer do
     |> Map.put(:current_week, current_week)
 
     {:noreply, state}
+  end
+
+  def canonicalize([]), do: []
+  def canonicalize([pick = %Gnarl.Pick{winner: team} | rest]) do
+    [ %Gnarl.Pick{pick | winner: Canonicalize.team_abbr(team)} | canonicalize(rest) ]
   end
 
   def handle_call({:current_week}, _from, state = %{current_week: week}) do
