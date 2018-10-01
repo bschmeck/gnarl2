@@ -1,9 +1,27 @@
 <%= form_for @conn, picks_path(@conn, :create, @season, @week), [as: :create], fn f -> %>
-  <%= text_input f, :ben_picks, placeholder: "Ben's Picks" %>
-  <%= text_input f, :ben_lock, placeholder: "Ben's Lock" %>
-  <%= text_input f, :ben_anti_lock, placeholder: "Ben's Anti-Lock" %>
-  <%= text_input f, :brian_picks, placeholder: "Brian's Picks" %>
-  <%= text_input f, :brian_lock, placeholder: "Brian's Lock" %>
-  <%= text_input f, :brian_anti_lock, placeholder: "Brian's Anti-Lock" %>
+<table border="1px solid">
+  <tr>
+    <th>BEN</th>
+    <th>#</th>
+    <th>BRIAN</th>
+  </tr>
+  <%= for row <- [1, 2, 3, 4, 5, 6, 7, 8] do %>
+      <tr>
+        <td><%= text_input f, String.to_atom("ben_pick_#{row}"), name: "ben_picks[]", tabindex: row %></td>
+        <td align=center><%= row %></td>
+        <td><%= text_input f, String.to_atom("brian_pick_#{row}"), name: "brian_picks[]" %></td>
+      </tr>
+      <% end %>
+      <tr>
+        <td><%= text_input f, :ben_lock, name: "ben_lock", tabindex: 9 %></td>
+        <td align=center>Lock</td>
+        <td><%= text_input f, :brian_lock, name: "brian_lock" %></td>
+      </tr>
+      <tr>
+        <td><%= text_input f, :ben_antilock, name: "ben_antilock", tabindex: 10 %></td>
+        <td align=center>Anti-lock</td>
+        <td><%= text_input f, :brian_antilock, name: "brian_antilock" %></td>
+      </tr>
+ </table>
   <%= submit "Submit" %>
 <% end %>
