@@ -25,4 +25,12 @@ defmodule GnarlWeb.Router do
     get "/:season/:week/ev", ApiController, :ev
     get "/:season/:week/scores", ApiController, :scores
   end
+
+  scope "/admin", GnarlWeb do
+    pipe_through :browser
+
+    get "/picks", Admin.PicksController, :index
+    get "/picks/:season/:week", Admin.PicksController, :show
+    post "/picks/:season/:week", Admin.PicksController, :create
+  end
 end

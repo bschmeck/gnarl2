@@ -1,0 +1,27 @@
+<%= form_for @conn, picks_path(@conn, :create, @season, @week), [as: :create], fn f -> %>
+<table border="1px solid">
+  <tr>
+    <th>BEN</th>
+    <th>#</th>
+    <th>BRIAN</th>
+  </tr>
+  <%= for {slot, ben, brian} <- @picks do %>
+      <tr>
+        <td><%= text_input f, String.to_atom("ben_pick_#{slot}"), name: "ben_picks[]", tabindex: slot, value: ben%></td>
+        <td align=center><%= slot %></td>
+        <td><%= text_input f, String.to_atom("brian_pick_#{slot}"), name: "brian_picks[]", value:  brian %></td>
+      </tr>
+  <% end %>
+      <tr>
+        <td><%= text_input f, :ben_lock, name: "ben_lock", tabindex: 9, value: @ben_lock %></td>
+        <td align=center>Lock</td>
+        <td><%= text_input f, :brian_lock, name: "brian_lock", value: @brian_lock %></td>
+      </tr>
+      <tr>
+        <td><%= text_input f, :ben_antilock, name: "ben_antilock", tabindex: 10, value: @ben_antilock %></td>
+        <td align=center>Anti-lock</td>
+        <td><%= text_input f, :brian_antilock, name: "brian_antilock", value: @brian_antilock %></td>
+      </tr>
+ </table>
+  <%= submit "Submit" %>
+<% end %>
