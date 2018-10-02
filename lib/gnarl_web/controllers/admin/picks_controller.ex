@@ -16,11 +16,16 @@ defmodule GnarlWeb.Admin.PicksController do
 
 
   def show(conn, %{"season" => season, "week" => week}) when season >= 2017 and week in (1..17) do
-    {:ok, {season, week}} = PicksServer.current_week
+    {:ok, picks} = PicksServer.picks_for(season, week)
 
     conn
     |> assign(:season, season)
     |> assign(:week, week)
+    |> assign(:picks, list_picks(picks))
+    |> assign(:ben_lock, find_lock(picks, "BEN"))
+    |> assign(:brian_lock, find_lock(picks, "BRIAN"))
+    |> assign(:ben_antilock, find_antilock(picks, "BEN"))
+    |> assign(:brian_antilock, find_antilock(picks, "BRIAN"))
     |> render("show.html")
   end
 
@@ -39,4 +44,31 @@ defmodule GnarlWeb.Admin.PicksController do
     PicksServer.set_picks(season, week, picks)
     redirect conn, to: page_path(conn, :index)
   end
+
+  defp list_picks([]) do
+    [{1, "", ""}, {2, "", ""}, {3, "", ""}, {4, "", ""}, {5, "", ""}, {6, "", ""}, {7, "", ""}, {8, "", ""}]
+  end
+
+  defp list_picks(picks) do
+    grouped = Enum.group_by(picks, &(&1.slot))
+    grouped
+    |> Map.keys
+    |> Enum.sort
+    |> Enum.map(fn(slot) -> grouped |> Map.get(slot) |> winners(slot) end)
+  end
+
+  defp winners(slotted, slot) do
+    {
+      slot,
+      Enum.find(slotted, &(&1.picker == "BEN")).winner,
+      Enum.find(slotted, &(&1.picker == "BRIAN")).winner
+    }
+  end
+
+  defp find_lock([], _picker), do: ""
+  defp find_lock([%Gnarl.Pick{picker: picker, lock: true, winner: winner} | _rest], picker), do: winner
+  defp find_lock([_pick | rest], picker), do: find_lock(rest, picker)
+  defp find_antilock([], _picker), do: ""
+  defp find_antilock([%Gnarl.Pick{picker: picker, antilock: true, winner: winner} | _rest], picker), do: winner
+  defp find_antilock([_pick | rest], picker), do: find_antilock(rest, picker)
 end
