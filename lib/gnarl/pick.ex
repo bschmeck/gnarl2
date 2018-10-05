@@ -1,6 +1,16 @@
 defmodule Gnarl.Pick do
-  @enforce_keys [:picker, :winner, :slot]
-  defstruct picker: '', winner: '', slot: 0, lock: false, antilock: false
+  use Ecto.Schema
+
+  schema "picks" do
+    field :picker, :string
+    field :winner, :string
+    field :slot, :integer
+    field :lock, :boolean, default: false
+    field :antilock, :boolean, default: false
+    field :season, :integer
+    field :week, :integer
+    timestamps
+  end
 
   def build(picker, winners, lock, antilock), do: build(picker, winners, lock, antilock, 1)
   defp build(_picker, [], _lock, _antilock, _slot), do: []

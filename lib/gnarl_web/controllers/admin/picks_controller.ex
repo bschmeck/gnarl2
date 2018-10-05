@@ -1,6 +1,8 @@
 defmodule GnarlWeb.Admin.PicksController do
   use GnarlWeb, :controller
 
+  require Ecto.Query
+
   def index(conn, _params) do
     {:ok, {season, week}} = PicksServer.current_week
 
@@ -38,9 +40,14 @@ defmodule GnarlWeb.Admin.PicksController do
   end
 
   def create(conn, %{"season" => season, "week" => week, "ben_picks" => ben_picks, "brian_picks" => brian_picks, "ben_lock" => ben_lock, "brian_lock" => brian_lock, "ben_antilock" => ben_antilock, "brian_antilock" => brian_antilock}) do
+    q = Ecto.Query.from p in "picks", where: p.season == ^season, where: p.week == ^week
+    Gnarl.Repo.delete_all(q)
+
     ben_picks = ben_picks |> Enum.reject(&(&1 == ""))
     brian_picks = brian_picks |> Enum.reject(&(&1 == ""))
     picks = Gnarl.Pick.build("BEN", ben_picks, ben_lock, brian_antilock) ++ Gnarl.Pick.build("BRIAN", brian_picks, brian_lock, ben_antilock)
+    Enum.each(picks, &(Gnarl.Repo.insert(%Gnarl.Pick{&1 | season: season, week: week})))
+
     PicksServer.set_picks(season, week, picks)
     redirect conn, to: page_path(conn, :index)
   end
