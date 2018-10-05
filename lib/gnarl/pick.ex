@@ -16,7 +16,7 @@ defmodule Gnarl.Pick do
   defp build(_picker, [], _lock, _antilock, _slot), do: []
   defp build(picker, [winner | rest], lock, antilock, slot) do
     [
-      %__MODULE__{picker: picker, winner: winner, slot: slot, lock: winner == lock, antilock: winner == antilock} |
+      %__MODULE__{picker: picker, winner: Canonicalize.team_abbr(winner), slot: slot, lock: winner == lock, antilock: winner == antilock} |
       build(picker, rest, lock, antilock, slot + 1)
     ]
   end
