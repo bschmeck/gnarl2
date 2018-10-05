@@ -1,12 +1,12 @@
 defmodule PicksServer do
   use GenServer
 
+  require Ecto.Query
+
   # Client
 
   def start_link do
-    default_week = {2017, 1}
-    state = %{current_week: default_week, picks: %{} }
-    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+    GenServer.start_link(__MODULE__, state_from_db(), name: __MODULE__)
   end
 
   def set_picks(season, week, picks) do
@@ -51,5 +51,19 @@ defmodule PicksServer do
     week_picks = Map.get(picks, week, [])
 
     {:reply, {:ok, week_picks}, state}
+  end
+
+  defp state_from_db do
+    picks = Gnarl.Pick
+    |> Gnarl.Repo.all
+    |> Enum.group_by(&({&1.season, &1.week}))
+
+    current_season = Gnarl.Repo.one(Ecto.Query.from p in Gnarl.Pick, select: max(p.season))
+    current_week = Gnarl.Repo.one(Ecto.Query.from p in Gnarl.Pick, select: max(p.week))
+
+    %{
+      current_week: {current_season, current_week},
+      picks: picks
+    }
   end
 end
