@@ -6,8 +6,8 @@ defmodule Gnarl.Updater do
   end
 
   def init(state) do
-    Process.send_after(self(), :scores, :timer.minutes(1))
-    Process.send_after(self(), :probabilities, :timer.minutes(1))
+    Process.send_after(self(), :scores, :timer.minutes(0))
+    Process.send_after(self(), :probabilities, :timer.minutes(0))
     {:ok, state}
   end
 
