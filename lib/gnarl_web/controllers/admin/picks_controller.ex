@@ -26,8 +26,8 @@ defmodule GnarlWeb.Admin.PicksController do
     |> assign(:picks, list_picks(picks))
     |> assign(:ben_lock, find_lock(picks, "BEN"))
     |> assign(:brian_lock, find_lock(picks, "BRIAN"))
-    |> assign(:ben_antilock, find_antilock(picks, "BEN"))
-    |> assign(:brian_antilock, find_antilock(picks, "BRIAN"))
+    |> assign(:ben_antilock, find_antilock(picks, "BRIAN"))
+    |> assign(:brian_antilock, find_antilock(picks, "BEN"))
     |> render("show.html")
   end
 
