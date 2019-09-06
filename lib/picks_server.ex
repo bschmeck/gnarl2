@@ -59,7 +59,7 @@ defmodule PicksServer do
     |> Enum.group_by(&({&1.season, &1.week}))
 
     current_season = Gnarl.Repo.one(Ecto.Query.from p in Gnarl.Pick, select: max(p.season))
-    current_week = Gnarl.Repo.one(Ecto.Query.from p in Gnarl.Pick, select: max(p.week))
+    current_week = Gnarl.Repo.one(Ecto.Query.from p in Gnarl.Pick, where: p.season == ^current_season, select: max(p.week))
 
     %{
       current_week: {current_season, current_week},
