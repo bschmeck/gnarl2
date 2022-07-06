@@ -1,4 +1,4 @@
-# Gnarl
+# GNARL
 
 To start your Phoenix server:
 
